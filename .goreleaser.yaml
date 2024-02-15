@@ -1,0 +1,48 @@
+env:
+  # Global env vars for Go build.
+  - 'CGO_ENABLED=0'
+  - 'GO111MODULE=on'
+  - 'GOPROXY=https://proxy.golang.org,direct'
+
+before:
+  hooks:
+    - 'go mod tidy'
+
+builds:
+  - id: 'capri-xiyue/go-releaser-test'
+    main: '.'
+    binary: 'go-releaser-test'
+    mod_timestamp: '{{ .CommitTimestamp }}'
+    flags:
+      - '-a'
+      - '-trimpath'
+    ldflags:
+      - '-s'
+      - '-w'
+      - '-X=main.version={{.Version}}'
+      - '-X=main.commit={{.Commit}}'
+      - '-X=main.date={{.Date}}'
+      - '-extldflags=-static'
+    goos:
+      - 'darwin'
+      - 'linux'
+    goarch:
+      - 'amd64'
+      - 'arm64'
+
+archives:
+  - format: 'tar.gz'
+    name_template: 'capri_xiyue_go_releaser_test_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+
+checksum:
+  name_template: 'capri_xiyue_go_releaser_test_{{ .Version }}_SHA512SUMS'
+  algorithm: 'sha512'
+
+changelog:
+  use: 'github'
+  sort: 'asc'
+
+# Release to github.
+release:
+  draft: false
+  mode: 'replace'
