@@ -16,6 +16,11 @@ builds:
     flags:
       - '-a'
       - '-trimpath'
+    ldflags:
+      - '-s'
+      - '-w'
+      - '-X=main.build={{.Version}}'
+      - '-extldflags=-static'
     goos:
       - 'darwin'
       - 'linux'
